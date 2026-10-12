@@ -30,6 +30,20 @@ be able to reach any other client.
 | `0006_forms` | `form_submissions` and `submit_form()` |
 | `0007_health` | `platform_health`, which checks the boundary is still standing |
 | `0008_invites` | `auth_user_id_for_email()` (server only) and `site_editors()` (staff only) for the invite screen |
+| `0009_list_placement` | `page` and `section` on `lists`, so a list shows up in the section of the page it belongs to |
+| `0010_guard_trusts_sql_editor` | The field guard only applies to dashboard users, so site setup files can be re-run in the SQL editor |
+
+### Site setup files
+
+`supabase/sites/{slug}.sql` defines what one client can edit: every
+editable field and list, grouped by page and section, in the order they
+appear. Run it in the SQL editor after adding the site in the dashboard.
+Re-running it updates labels, help text and order, and never touches what
+the client has written. The test suite runs every file in that folder
+twice to prove it.
+
+Keys (`home.hero.title`) are what the site's code asks for, so renaming
+one means changing the site too. Labels and help text can change freely.
 
 Rules worth knowing before writing code against it:
 
@@ -96,6 +110,23 @@ src/app/(app)/sites/    all sites, one site's overview, and the server actions
   page can't tell the difference, and neither can they.
 - **A client with one site skips the site list** and lands on it directly.
 
+### The Pages editor
+
+`/sites/{slug}/pages/{page}`. One tab per page, sections as cards, the
+right input for each field type, and a Save / Publish bar.
+
+- **Every field has three versions**: what's in the box, the saved draft,
+  and what's live. Each field's badge says which state it's in, and
+  nothing reaches the website until Publish.
+- **Checks run three times**: in the browser for an instant message, in
+  the server action, and in the database, which is the one that counts.
+  The rules live once in `src/lib/content.ts`, mirroring migration 0003.
+- **Images upload straight from the browser to Storage**, into the site's
+  own folder, so a large phone photo doesn't hit Vercel's 4.5MB limit.
+- **Publishing pings the client's website** (`src/lib/revalidate.ts`) so it
+  refreshes immediately. That file documents what the website's
+  revalidate route must do.
+
 ### Running it
 
 1. Copy `.env.example` to `.env.local` and fill in the Supabase URL,
@@ -115,7 +146,7 @@ npm run test:db
 
 This builds the whole schema in PGlite (real Postgres, in-process, no
 Docker), applies every migration **twice** to prove they're re-runnable,
-and runs 46 isolation, publishing and invite checks. Run it before changing any
+and runs 48 checks: isolation, publishing, invites, and every site setup file. Run it before changing any
 policy, grant or `site_id` column, and add a test for any new table.
 
 New migrations go in `supabase/migrations` with the next timestamp. Each one

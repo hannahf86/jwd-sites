@@ -412,6 +412,32 @@ await test('platform_health reads ok on every row', async () => {
   if (bad.length) throw new Error(bad.map((r) => `${r.check}: ${r.result}`).join('; '));
 });
 
+console.log('\nSite setup files');
+
+// Each file in supabase/sites defines one client's editable fields. The
+// test database's first site has the feel-good-menopause slug, so its file
+// applies to that; any other file just needs to apply without error once a
+// site with its slug exists.
+const SITE_FILES = join(ROOT, 'supabase', 'sites');
+for (const f of readdirSync(SITE_FILES).filter((f) => f.endsWith('.sql')).sort()) {
+  await test(`${f} applies twice and keeps what the client wrote`, async () => {
+    const before = await db.query(
+      `select key, draft_value, published_value from content_fields where site_id = $1 order by key`, [SITE1]);
+    const sql = readFileSync(join(SITE_FILES, f), 'utf8');
+    await db.exec(sql);
+    await db.exec(sql);
+    for (const row of before.rows) {
+      const [after] = (await db.query(
+        `select draft_value, published_value from content_fields where site_id = $1 and key = $2`, [SITE1, row.key])).rows;
+      equal(after, { draft_value: row.draft_value, published_value: row.published_value }, row.key);
+    }
+  });
+}
+
+await test('the Feel Good Menopause setup puts every list on a page', async () => {
+  equal(await count(STAFF, `select count(*) n from lists where site_id = $1 and page is null`, [SITE1]), 0);
+});
+
 // --- result -----------------------------------------------------------------
 
 console.log(`\n${passed} passed, ${failures.length} failed`);

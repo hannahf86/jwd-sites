@@ -5,6 +5,7 @@
 // until its editor is built, but the numbers on them are real.
 // Someone else's site is a 404, never a 403 — RLS returns no row, so the
 // page can't tell "doesn't exist" from "not yours", and neither can they.
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, FileText, Image as ImageIcon, Inbox, LayoutList, Newspaper } from "lucide-react";
 import { getSite, siteCounts, siteEditors } from "@/lib/sites";
@@ -39,16 +40,20 @@ export default async function SitePage({ params }: Props) {
     viewer.isStaff ? siteEditors(site.id) : Promise.resolve([]),
   ]);
 
-  const modules = [
+  // `href` marks the ones that are built; the rest say "Coming soon".
+  const modules: { name: string; icon: typeof FileText; stat: string; href?: string }[] = [
     {
       name: "Pages",
       icon: FileText,
+      href: `/sites/${site.slug}/pages`,
       stat:
         counts.fields === 0
           ? "No editable text set up yet"
           : counts.unpublishedFields > 0
             ? `${plural(counts.unpublishedFields, "change")} not published`
-            : "Everything is published",
+            : counts.liveFields === 0
+              ? "Ready to fill in"
+              : "Everything is published",
     },
     { name: "Lists", icon: LayoutList, stat: "Testimonials, logos and more" },
     { name: "Events", icon: CalendarDays, stat: plural(counts.upcomingEvents, "upcoming event") },
@@ -84,16 +89,29 @@ export default async function SitePage({ params }: Props) {
         <section aria-labelledby="edit-heading">
           <h2 id="edit-heading" className="section-title">What you can edit</h2>
           <div className="module-grid">
-            {modules.map(({ name, icon: Icon, stat }) => (
-              <div key={name} className="card module is-soon">
-                <Icon size={18} aria-hidden style={{ color: "var(--accent-text)" }} />
-                <span className="module-name">{name}</span>
-                <span className="module-stat">{stat}</span>
-                <span className="badge badge-muted" style={{ alignSelf: "flex-start", marginTop: 6 }}>
-                  Coming soon
-                </span>
-              </div>
-            ))}
+            {modules.map(({ name, icon: Icon, stat, href }) => {
+              const inner = (
+                <>
+                  <Icon size={18} aria-hidden style={{ color: "var(--accent-text)" }} />
+                  <span className="module-name">{name}</span>
+                  <span className="module-stat">{stat}</span>
+                  {!href && (
+                    <span className="badge badge-muted" style={{ alignSelf: "flex-start", marginTop: 6 }}>
+                      Coming soon
+                    </span>
+                  )}
+                </>
+              );
+              return href ? (
+                <Link key={name} href={href} className="card module site-card">
+                  {inner}
+                </Link>
+              ) : (
+                <div key={name} className="card module is-soon">
+                  {inner}
+                </div>
+              );
+            })}
           </div>
         </section>
 
