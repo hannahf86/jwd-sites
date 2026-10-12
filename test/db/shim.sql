@@ -9,8 +9,9 @@
 
 create schema if not exists auth;
 create table auth.users (
-  id    uuid primary key,
-  email text unique
+  id              uuid primary key,
+  email           varchar(255) unique,
+  last_sign_in_at timestamptz
 );
 
 -- PostgREST puts the JWT's sub here; auth.uid() reads it back.

@@ -29,6 +29,7 @@ be able to reach any other client.
 | `0005_posts_events` | `posts` and `events`, with scheduling via `published_at` |
 | `0006_forms` | `form_submissions` and `submit_form()` |
 | `0007_health` | `platform_health`, which checks the boundary is still standing |
+| `0008_invites` | `auth_user_id_for_email()` (server only) and `site_editors()` (staff only) for the invite screen |
 
 Rules worth knowing before writing code against it:
 
@@ -73,6 +74,38 @@ Rules worth knowing before writing code against it:
    select * from public.platform_health;
    ```
 
+## The dashboard
+
+Next.js 16 (App Router) in `src/`. Styling is copied from the JWD client
+portal's tokens for now (`src/app/globals.css`); colours change there, never
+as literals in pages.
+
+```
+src/proxy.ts            refreshes the Supabase session, sends signed-out people to /login
+src/lib/supabase/       server (as the user), browser, and admin (secret key) clients
+src/lib/viewer.ts       who's signed in, and are they staff
+src/lib/sites.ts        reading sites, counts and editors
+src/app/(auth)/         login, forgot-password, reset-password (also where invites land)
+src/app/(app)/sites/    all sites, one site's overview, and the server actions
+```
+
+- **Everything goes through `db()`**, the client that carries the user's
+  session, so RLS decides what comes back. `adminDb()` (the secret key) is
+  for creating, finding and deleting accounts on invite, and nothing else.
+- **Someone else's site is a 404**, not a 403. RLS returns no row, so the
+  page can't tell the difference, and neither can they.
+- **A client with one site skips the site list** and lands on it directly.
+
+### Running it
+
+1. Copy `.env.example` to `.env.local` and fill in the Supabase URL,
+   publishable key and secret key (Project Settings → API Keys).
+2. **Supabase → Authentication → URL Configuration:** set the Site URL to
+   the dashboard's address, and add `http://localhost:3108/**` (and later
+   the live address) to the Redirect URLs. Invite and reset links only go
+   to addresses on that list.
+3. `npm run dev`, then open http://localhost:3108.
+
 ## Tests
 
 ```bash
@@ -82,7 +115,7 @@ npm run test:db
 
 This builds the whole schema in PGlite (real Postgres, in-process, no
 Docker), applies every migration **twice** to prove they're re-runnable,
-and runs 43 isolation and publishing checks. Run it before changing any
+and runs 46 isolation, publishing and invite checks. Run it before changing any
 policy, grant or `site_id` column, and add a test for any new table.
 
 New migrations go in `supabase/migrations` with the next timestamp. Each one

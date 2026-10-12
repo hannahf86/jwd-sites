@@ -1,0 +1,674 @@
+/* ============================================================
+   JWD SITES — global styles
+   ============================================================
+   Tokens and base components are copied from the JWD client portal
+   (jwd-client-portal/src/app/globals.css, dark theme) so the two products
+   look like one family. Colours are a placeholder until this gets its own
+   palette — change them here, in the tokens, never as literals in pages.
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap");
+:root {
+  /* Fonts */
+  --font-display: "Maven Pro", system-ui, sans-serif;
+  --font-sans: "Lato", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* --- Surfaces: canvas, inset, card, raised, hover --- */
+  --bg-base: #0B1715;
+  --bg-sunken: #0E1A18;
+  --surface-1: #12211E;
+  --surface-2: #16271F;
+  --surface-3: #1C2F28;
+
+  /* --- Hairlines --- */
+  --border-subtle: #26372F;
+  --border-default: #33473D;
+  --border-strong: #33473D;
+
+  /* --- Text --- */
+  --fg-1: #ECE6D8;
+  --fg-2: #C9C2B2;
+  --fg-3: #93A7A0;
+  --fg-disabled: #5E7269;
+  --fg-on-accent: #0B1715;
+
+  /* --- Accent: teal --- */
+  --accent: #3BB3AC;
+  --accent-hover: #55C4BD;
+  --accent-dim: #237A76;
+  --accent-text: #A6DDD8;
+  --accent-panel: #0F2524;
+
+  /* --- Status --- */
+  --success: #5FA98C;
+  --success-text: #8FC7AE;
+  --tint-success: #132521;
+  --danger: #C2705A;
+  --danger-text: #E3A98A;
+  --tint-danger: #26191A;
+  --warning: #C79A3B;
+  --warning-text: #E8CE8E;
+  --tint-warning: #231D12;
+  --info-text: #B6C7C1;
+  --tint-info: #14201F;
+
+  /* --- Product colours, for charts and categories --- */
+  --jade: #1E7158;
+  --jade-mid: #2F8E6E;
+  --jade-soft: #5FA98C;
+  --peach: #E3A98A;
+  --clay: #C2705A;
+
+  /* --- Calendar categories ---
+     Three kinds of work, three colours, on the planner and nowhere else.
+     Green for client work, teal for professional development, orange for a
+     client call — plus a fourth for admin, which had to exist once
+     categories did. Each is a line (the bar down the side of a block), a
+     soft (its fill) and a text (the words on that fill, chosen to clear
+     4.5:1 against it). */
+  --cat-client-line: #2F8E6E;
+  --cat-client-soft: #132521;
+  --cat-client-text: #8FC7AE;
+  --cat-development-line: #3BB3AC;
+  --cat-development-soft: #0F2524;
+  --cat-development-text: #A6DDD8;
+  --cat-admin-line: #6F827A;
+  --cat-admin-soft: #14201F;
+  --cat-admin-text: #B6C7C1;
+  --cat-call-line: #C79A3B;
+  --cat-call-soft: #231D12;
+  --cat-call-text: #E8CE8E;
+
+  /* --- Legacy names, now pointing at the palette above ---
+     Kept so the whole app moves in one step. Reach for the semantic names
+     in new code; these exist so old code isn't wrong. */
+  --green: var(--accent);
+  --green-bright: var(--accent-text);
+  --green-dim: var(--accent-dim);
+  --teal: var(--accent);
+  --teal-bright: var(--accent-text);
+  --teal-dim: var(--accent-dim);
+  --amber: var(--warning);
+  --amber-bright: var(--warning-text);
+  --orange: var(--warning);
+  --info: var(--info-text);
+  --brand-apple-green: var(--accent);
+  --brand-jelly-bean: var(--accent);
+  --brand-tree-poppy: var(--warning-text);
+  --tint-green: var(--tint-success);
+  --tint-teal: var(--accent-panel);
+  --tint-amber: var(--tint-warning);
+  --tint-neutral: var(--surface-2);
+  --border-green: var(--accent-dim);
+  --border-teal: var(--accent-dim);
+  --cream: #F4F0E6;
+  --cream-deep: #EAE4D6;
+  --ink: #0B1715;
+
+  /* Radii */
+  --r-xs: 6px;
+  --r-sm: 9px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.55);
+  --glow-green: 0 0 0 1px var(--accent-dim), 0 6px 22px rgba(59, 179, 172, 0.22);
+  --glow-teal: 0 0 0 1px var(--accent-dim), 0 6px 22px rgba(59, 179, 172, 0.2);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--fg-1);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.dashboard-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+.dashboard-sidebar {
+  width: 244px;
+  flex: none;
+  background: var(--surface-1);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dashboard-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 32px;
+}
+
+/* ============================================================
+   NAV ITEMS
+   ============================================================ */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--fg-2);
+  cursor: pointer;
+  margin-bottom: 2px;
+  transition: all var(--dur-fast) var(--ease);
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: var(--surface-2);
+  color: var(--fg-1);
+}
+.nav-item.active {
+  background: var(--tint-green);
+  color: var(--green-bright);
+  font-weight: 600;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  padding: 20px;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.badge-progress {
+  background: var(--tint-teal);
+  color: var(--teal-bright);
+}
+.badge-live {
+  background: var(--tint-green);
+  color: var(--green-bright);
+}
+.badge-needs {
+  background: var(--tint-amber);
+  color: var(--amber-bright);
+}
+.badge-overdue {
+  background: var(--tint-danger);
+  color: #f0937e;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--green);
+  color: var(--fg-on-accent);
+  padding: 9px 16px;
+  border-radius: var(--r-sm);
+  font-weight: 700;
+  font-size: 13.5px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  box-shadow: var(--glow-green);
+  font-family: var(--font-sans);
+}
+
+.btn-primary:hover {
+  background: var(--green-bright);
+}
+
+/* Secondary, ghost and field. These were repeated inline across the
+   dashboard pages; the client portal design factors them out, and having
+   them as classes is what lets the two sides stay visually identical. */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--tint-teal);
+  color: var(--teal-bright);
+  padding: 9px 16px;
+  border-radius: var(--r-sm);
+  font-weight: 700;
+  font-size: 13.5px;
+  border: 1px solid var(--border-teal);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all var(--dur-fast) var(--ease);
+}
+.btn-secondary:hover {
+  background: rgba(42, 154, 158, 0.24);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  color: var(--fg-2);
+  padding: 9px 14px;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all var(--dur-fast) var(--ease);
+}
+.btn-ghost:hover {
+  background: var(--surface-2);
+  color: var(--fg-1);
+}
+
+.field {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-family: var(--font-sans);
+  color: var(--fg-1);
+}
+.field::placeholder {
+  color: var(--fg-3);
+}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 32px;
+  background: rgba(13, 20, 17, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ============================================================
+   EYEBROW
+   ============================================================ */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal-bright);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-3);
+}
+
+/* ============================================================
+   JWD SITES — dashboard-specific
+   ============================================================
+   Everything below is new to this app. Built from the tokens above. */
+
+/* --- Focus: visible for keyboard users, everywhere --- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+a {
+  color: var(--accent-text);
+}
+
+/* --- Auth pages: the centred card --- */
+.auth-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px 16px;
+  background: var(--bg-base);
+}
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+}
+.auth-card h1 {
+  margin: 0 0 7px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+}
+.auth-intro {
+  margin: 0 0 26px;
+  font-size: 14.5px;
+  color: var(--fg-2);
+  line-height: 1.5;
+}
+.btn-block {
+  width: 100%;
+  justify-content: center;
+  padding: 13px 16px;
+  font-size: 15px;
+  text-decoration: none;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* --- Wordmark --- */
+.wordmark {
+  line-height: 1.1;
+  text-decoration: none;
+  display: block;
+}
+.wordmark-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--fg-1);
+}
+.wordmark-product {
+  font-size: 10px;
+  color: var(--amber-bright);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+/* --- Forms --- */
+.label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg-2);
+  margin-bottom: 7px;
+}
+.form-row + .form-row {
+  margin-top: 16px;
+}
+.hint {
+  font-size: 12.5px;
+  color: var(--fg-3);
+  margin-top: 6px;
+}
+
+/* --- Messages: error, success, info --- */
+.message {
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  line-height: 1.5;
+  border: 1px solid transparent;
+}
+.message-error {
+  background: var(--tint-danger);
+  border-color: var(--danger);
+  color: var(--danger-text);
+}
+.message-success {
+  background: var(--tint-success);
+  border-color: var(--accent-dim);
+  color: var(--success-text);
+}
+
+/* --- Sidebar contents --- */
+.sidebar-head {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+}
+.sidebar-section {
+  padding: 14px 12px 6px;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.sidebar-foot {
+  padding: 14px 12px 18px;
+  border-top: 1px solid var(--border-subtle);
+}
+.sidebar-user {
+  padding: 0 12px 10px;
+  font-size: 12.5px;
+  color: var(--fg-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- Page header --- */
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.page-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.page-sub {
+  color: var(--fg-2);
+  font-size: 14px;
+  margin-top: 4px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 12px;
+}
+
+/* --- Grids --- */
+.site-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* --- Site card --- */
+.site-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.site-card:hover {
+  border-color: var(--border-default);
+  background: var(--surface-2);
+}
+.site-card-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 2px;
+}
+.site-card-domain {
+  font-size: 13px;
+  color: var(--fg-3);
+}
+
+/* --- Module tiles (Pages, Events, Blog…) --- */
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.module-name {
+  font-weight: 700;
+  font-size: 14.5px;
+}
+.module-stat {
+  font-size: 13px;
+  color: var(--fg-2);
+}
+.module.is-soon {
+  opacity: 0.7;
+}
+
+/* --- Simple list (editors) --- */
+.list {
+  list-style: none;
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.list-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+.list-main {
+  min-width: 0;
+}
+.list-title {
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.list-meta {
+  font-size: 12.5px;
+  color: var(--fg-3);
+}
+.empty {
+  font-size: 13.5px;
+  color: var(--fg-3);
+}
+
+.badge-muted {
+  background: var(--surface-3);
+  color: var(--fg-2);
+}
+
+/* --- Phone and small tablet: sidebar becomes a top bar --- */
+@media (max-width: 800px) {
+  .dashboard-shell {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+  .dashboard-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .sidebar-nav {
+    padding: 8px 12px;
+  }
+  .dashboard-main {
+    overflow: visible;
+  }
+  .dashboard-content {
+    padding: 20px 16px;
+    overflow: visible;
+  }
+  .two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

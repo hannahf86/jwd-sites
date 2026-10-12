@@ -389,6 +389,21 @@ await test('submissions are rate limited per site', async () => {
   await as('anon', `select submit_form($1, 'contact', '{}')`, [SITE2]);
 });
 
+console.log('\nInvites');
+
+await test('staff can list a site\'s editors with their emails', async () => {
+  equal(await as(STAFF, `select email from site_editors($1)`, [SITE1]), [{ email: 'kirsty@example.test' }]);
+});
+
+await test('an editor gets no editor list, even for their own site', async () => {
+  equal(await as(KIRSTY, `select email from site_editors($1)`, [SITE1]), []);
+});
+
+await test('only the server can look up an account by email', async () => {
+  await refused(as(STAFF, `select auth_user_id_for_email('kirsty@example.test')`), /permission denied/);
+  await refused(as('anon', `select auth_user_id_for_email('kirsty@example.test')`), /permission denied/);
+});
+
 console.log('\nHealth');
 
 await test('platform_health reads ok on every row', async () => {
