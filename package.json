@@ -1,0 +1,13 @@
+{
+  "name": "jwd-sites",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Jorvik Web Dev client sites platform: shared Supabase backend and client dashboard",
+  "type": "module",
+  "scripts": {
+    "test:db": "node test/db/run.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.9"
+  }
+}
